@@ -1,13 +1,18 @@
 import sqlite3
-
+from db import db
 # moved into model folder because the api cannot receive data or send JSON from this class
 # these methods below allow us to receive user help us store information about a user
 # also these methods allow us to retrieve user objects from a database
 
 
-class UserModel:
-    TABLE_NAME = 'users'
+class UserModel(db.Model):
+    # here we tell sqlalchemy the columns which our model will have and it will look for these three properties.
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80))
+    password = db.Column(db.String(80))
 
+    # in this function def we must relate them to the database they must match the data columns above or will not save
     def __init__(self, _id, username, password):
         self.id = _id
         self.username = username
@@ -19,7 +24,7 @@ class UserModel:
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 # after this declaration all cursor methods are bound to the declared database of 'data.db'
-        query = "SELECT * FROM {table} WHERE username=?".format(table=cls.TABLE_NAME)
+        query = "SELECT * FROM users WHERE username=?"
         result = cursor.execute(query, (username,))  # must be a tuple in order to have a tuple we need the comma(x,)
         row = result.fetchone()
 # our row = result.fetchone just means row will equal the first username found
